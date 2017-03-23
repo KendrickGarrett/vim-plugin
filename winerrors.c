@@ -63,27 +63,59 @@ void GetWinError (unsigned long errcode, char** name) {
 		break;
 		case ERROR_INVALID_ACCESS:									//0x0000000C
 		*name = "ERROR_INVALID_ACCESS";
+		//The access code is invalid
 		break;
 		case ERROR_INVALID_DATA:									//0x0000000D
 		*name = "ERROR_INVALID_DATA";
+		//The data is invalid
 		break;
 		case ERROR_OUTOFMEMORY:										//0x0000000E
 		*name = "ERROR_OUTOFMEMORY";
+		//Not enough storae is available to complete this operation
 		break;
 		case ERROR_INVALID_DRIVE:									//0x0000000F
 		*name = "ERROR_INVALID_DRIVE";
+		//The system cannot move the file to a different disk drive
 		break;
 		case ERROR_CURRENT_DIRECTORY:								//0x00000010
 		*name = "ERROR_CURRENT_DIRECTORY";
+		//The directory cannot be removed
 		break;
 		case ERROR_NOT_SAME_DEVICE:									//0x00000011
 		*name = "ERROR_NOT_SAME_DEVICE";
+		//The system cannot move the file to a different disk drive
+		break;
+		case ERROR_NO_MORE_FILES:									//0x00000012
+		*name = "ERROR_NO_MORE_FILES";
+		//There are no more files
+		break;
+		case ERROR_WRITE_PROTECT:									//0x00000013
+		*name = "ERROR_WRITE_PROTECT";
+		//The media is write protected
+		break;
+		case ERROR_OUT_OF_PAPER:									//0x0000001C
+		*name = "ERROR_OUT_OF_PAPER";
+		//The printer is out of paper
+		break;
+		case ERROR_DUP_NAME:										//0x00000034
+		*name = "ERROR_DUP_NAME";
+		//Connection failed because a duplicate name exists on the network
+		break;
+		case ERROR_BAD_NETPATH:										//0x00000035
+		*name = "ERROR_BAD_NETPATH";
+		//The network path was not found
+		break;
+		case ERROR_NETWORK_BUSY:									//0x00000036
+		*name = "ERROR_NETWORK_BUSY";
+		//The network is busy
 		break;
 		case ERROR_FILE_EXISTS:										//0x00000050
 		*name = "ERROR_FILE_EXISTS";
+		//The file exists
 		break;
 		case ERROR_CANNOT_MAKE:										//0x00000052
 		*name = "ERROR_CANNOT_MAKE";
+		//The directory or file cannot be created
 		break;
 		case ERROR_OUT_OF_STRUCTURES:								//0x00000054
 		*name = "ERROR_OUT_STRUCTURES";
@@ -100,26 +132,40 @@ void GetWinError (unsigned long errcode, char** name) {
 		case ERROR_NO_PROC_SLOTS:									//0x00000059
 		*name = "ERROR_NO_PROC_SLOTS";
 		break;
+		case ERROR_SEM_IS_SET:										//0x00000066
+		*name = "ERROR_SEM_IS_SET";
+		//The semaphore is set and cannot be closed
+		break;
+		case ERROR_SEM_OWNER_DIED:									//0x00000069
+		*name = "ERROR_SEM_OWNER_DIED";
+		//The previous ownership of this semaphore has ended
+		break;
 		case ERROR_OPEN_FAILED:										//0x0000006E
 		*name = "ERROR_OPEN_FAILED";
+		//The system cannot open the device or file specified
 		break;
 		case ERROR_BUFFER_OVERFLOW:									//0x0000006F
 		*name = "ERROR_BUFFER_OVERFLOW";
+		//The file name is too long
 		break;
 		case ERROR_DISK_FULL:										//0x00000070
 		*name = "ERROR_DISK_FULL";
+		//There is not enough space on the disk
 		break;
 		case ERROR_NO_MORE_SEARCH_HANDLES:							//0x00000071
 		*name = "ERROR_NO_MORE_SEARCH_HANDLES";
+		//No more internal file identifiers available
 		break;
 		case ERROR_CALL_NOT_IMPLEMENTED:							//0x00000078
 		*name = "ERROR_CALL_NOT_IMPLEMENTED";
+		//This function is not supported on this system
 		break;
 		case ERROR_INSUFFICIENT_BUFFER:								//0x0000007A
 		*name = "ERROR_INSUFFICIENT_BUFFER";
 		break;
 		case ERROR_INVALID_NAME:									//0x0000007B
 		*name = "ERROR_INVALID_NAME";
+		//The filename, directory name, or volume label syntax is incorrect
 		break;
 		case ERROR_INVALID_LEVEL:									//0x0000007C
 		*name = "ERROR_INVALID_LEVEL";
@@ -138,15 +184,64 @@ void GetWinError (unsigned long errcode, char** name) {
 		break;
 		case ERROR_NOT_SUBSTED:										//0x00000089
 		*name = "ERROR_NOT_SUBSTED";
+		//The system tried to delete the substitution of a drive that is not substituted
+		break;
+		case ERROR_JOIN_TO_JOIN:									//0x0000008A
+		*name = "ERROR_JOIN_TO_JOIN";
+		//The system tried to join a drive to a directory on a joined drive
+		break;
+		case ERROR_SUBST_TO_SUBST:									//0x0000008B
+		*name = "ERROR_SUBST_TO_SUBST";
+		//The system tried to substitute a drive to a directory on a substituted drive
+		break;
+		case ERROR_JOIN_TO_SUBST:									//0x0000008C
+		*name = "ERROR_JOIN_TO_SUBST";
+		//The system tried to join a drive to a directory on a substituted drive
+		break;
+		case ERROR_SUBST_TO_JOIN:									//0x0000008D
+		*name = "ERROR_SUBST_TO_JOIN";
+		//The system tried to SUBST a drive to a directory on a joined drive
+		break;
+		case ERROR_BUSY_DRIVE:										//0x0000008E
+		*name = "ERROR_BUSY_DRIVE";
+		//The system cannot perform a JOIN or SUBST at this time
+		break;
+		case ERROR_DIR_NOT_ROOT:									//0x00000090
+		*name = "ERROR_DIR_NOT_ROOT";
+		//The directory is not a subdirectory of the root directory
 		break;
 		case ERROR_DIR_NOT_EMPTY:									//0x00000091
 		*name = "ERROR_DIR_NOT_EMPTY";
+		//The directory is not empty
+		break;
+		case ERROR_IS_SUBST_PATH:									//0x00000092
+		*name = "ERROR_IS_SUBST_PATH";
+		//The path being specified is being used in a substitute
+		break;
+		case ERROR_IS_JOIN_PATH:									//0x00000093
+		*name = "ERROR_IS_JOIN_PATH";
+		break;
+		//Not enough resources are available to process this command
+		break;
+		case ERROR_BAD_ARGUMENTS:									//0x000000A0
+		*name = "ERROR_BAD_ARGUMENTS";
+		//One or more arguments are not incorrect
 		break;
 		case ERROR_BAD_PATHNAME:									//0x000000A1
 		*name = "ERROR_BAD_PATHNAME";
+		//The specified path is invalid
 		break;
+		case ERROR_INVALID_ORDINAL:									//0x000000B6
+		*name = "ERROR_INVALID_ORDINAL";
+		//The operating system cannot run %1
+		break
 		case ERROR_ALREADY_EXISTS:									//0x000000B7
 		*name = "ERROR_ALREADY_EXISTS";
+		//Cannot create a file when that file already exists
+		break;
+		case ERROR_BAD_EXE_FORMAT:									//0x000000C1
+		*name = "ERROR_BAD_EXE_FORMAT";
+		//%1 is not a valid Win32 application
 		break;
 		case ERROR_MORE_DATA:										//0x000000EA
 		*name = "ERROR_MORE_DATA";
