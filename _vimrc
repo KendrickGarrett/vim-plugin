@@ -15,6 +15,10 @@ set backspace=eol,indent
 set completeopt=menuone,longest,noinsert,noselect
 set runtimepath+=$VIMRUNTIME/plugin/mpc/plugin
 
+let mapleader = "-"
+
+nnoremap <leader>so :so %<CR>
+
 syntax keyword winapi printf
 syntax keyword winapi malloc
 syntax keyword winapi GetLastError
@@ -23,29 +27,49 @@ syntax keyword winapi main WinMain
 syntax keyword winapi LookupAccountName LookupAccountNameA LookupAccountNameW
 syntax keyword winapi ConvertSidToStringSid ConvertSidToStringSidA ConvertSidToStringSidW
 syntax keyword winapi GetSystemRegistryQuota RegCloseKey
-"syntax keyword winapi FindFirstFile FindFirstFileA FindFirstFileW
-syntax keyword winapi FindFirstFile[A]
+syntax keyword winapi FindFirstFile FindFirstFileA FindFirstFileW
 highlight link winapi Function
 
 let g:FALSE=0
 let g:TRUE=1
 
-function! CreateProject()
-	let l:projname = input("Enter for the new project: ") 
-	call execute "normal! :"
+let g:projects_dir = $DEVENV."\\proj\\"
+let g:dummy = "Dummy".g:projects_dir
 
-	if (isdirectory($DEVENV."\\proj\\".projname))
+nnoremap <leader>cp :call CreateProjectCommand()<CR>
+"nnoremap <leader>dp
+"nnoremap <leader>lp
+
+function! CreateProjectCommand()
+	let l:projname = input("Enter a name for the new project: ")
+	call execute ("normal! :")
+	call CreateProject(l:projname)
+endfunction
+
+function! CreateProject(projname)
+	let l:projdir = g:projects_dir.a:projname
+
+	if (isdirectory(l:projdir))
 		echo "Project already exists"
 		return
 	endif
-
-	let g:current_project = $DEVENV."\\proj\\".projname
-
 	echo "\n"
-	let new_project = $DEVENV."\\projects\\".projname
-	let project_config = [projname." config file", "Enter configuration here"]
-	call system("mkdir ".new_project)
-	call writefile(["Hello"], new_project."\\".projname.".cnf") 
+
+	let l:project_config = [
+		\a:projname." config file\r\n", 
+		\"Enter configuration here\r\n"
+	\]
+
+	call mkdir(l:projdir)
+	call mkdir(l:projdir."\\inc")
+	call mkdir(l:projdir."\\rsc")
+	call mkdir(l:projdir."\\src")
+	call mkdir(l:projdir."\\obj")
+	call writefile(l:project_config, l:projdir."\\".a:projname.".cnf") 
+	call writefile(["/*", "*/"], l:projdir."\\src\\".a:projname.".c")
+
+	call RegSetValue("HKCU", "Environment", "CurrentProject", "REG_SZ", a:projname)
+	let g:current_project = l:projdir
 endfunction
 
 function! DestroyProject()
@@ -55,19 +79,25 @@ function! DestroyProject()
 endfunction
 
 "Load a project from the projects config file into the current buffer
-function! LoadProject()
+nnoremap <leader>lp :call LoadProjectCommand()<CR>
+function! LoadProjectCommand()
 	let l:projname = input("Enter the name of the project to load: ")
 	echo "\n"
-	let l:projdir = $DEVENV."\\proj\\".l:projname
+	call LoadProject(l:projname)
+endfunction
+
+function! LoadProject(projname)
+	let l:projdir = g:projects_dir.a:projname
 	if (!isdirectory(l:projdir))
 		echo "Error: Project does not exists"
 		return
 	endif
 
-	call RegSetValue("HKCU", "Environment", "CurrentProject", "REG_SZ", l:projname)
+	call RegSetValue("HKCU", "Environment", "CurrentProject", "REG_SZ", a:projname)
+	let g:current_project = l:projdir
 
 	"projects\projectname\projectname.cnf
-	let l:file = l:projdir."\\".l:projname.".cnf"
+	let l:file = l:projdir."\\".a:projname.".cnf"
 	if(!filereadable(l:file))
 		echo "There was an issue with the project config file"
 		return 
@@ -100,9 +130,11 @@ function! DeleteAllBuffers()
 	endwhile
 endfunction
 
+nnoremap <leader>bp :call BuildProjectCommand()<CR>
+
 function! Build()
-	echo "Building the project"
-	call system("cl ")
+	let l:cmd = "cl "
+	echo system(l:cmd)
 endfunction
 
 "**************************************
@@ -141,6 +173,15 @@ function! RegValueExists(regroot, regkey, valuename)
 	endif
 endfunction
 
+function! RegGetData(regroot, regkey, valuename)
+	let l:cmd = "REG QUERY \"".a:regroot."\\".a:regkey."\" /v \"".a:valuename."\""
+	let l:str = system(l:cmd)
+	if (Strip(l:str)[0:4] == 'ERROR')
+		return 
+	endif
+	return split(l:str)[3]
+endfunction
+
 function! BoolToString(bool)
 	if(a:bool)
 		return "TRUE"
@@ -154,3 +195,8 @@ function! Strip(string)
 	let l:nstr = substitute(a:string, '^[\r\n\s]*\(.\{-}\)[\r\n\s]*$', '\1', '')
 	return l:nstr
 endfunction
+
+let g:current_project_name = RegGetData("HKCU", "Environment", "CurrentProject")
+let g:current_project = g:projects_dir.g:current_project_name
+
+nnoremap <leader>ep :Ex 
