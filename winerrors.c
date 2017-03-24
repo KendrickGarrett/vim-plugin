@@ -234,7 +234,7 @@ void GetWinError (unsigned long errcode, char** name) {
 		case ERROR_INVALID_ORDINAL:									//0x000000B6
 		*name = "ERROR_INVALID_ORDINAL";
 		//The operating system cannot run %1
-		break
+		break;
 		case ERROR_ALREADY_EXISTS:									//0x000000B7
 		*name = "ERROR_ALREADY_EXISTS";
 		//Cannot create a file when that file already exists
@@ -312,9 +312,6 @@ void GetWinError (unsigned long errcode, char** name) {
 		break;
 		case ERROR_PROCESS_ABORTED:									//0x0000042B
 		*name = "ERROR_PROCESS_ABORTED";
-		break;
-		case ERROR_INVALID_COMPUTERNAME:							//0x000004BA
-		*name = "ERROR_INVALID_COMPUTERNAME";
 		break;
 		case ERROR_SERVICE_DEPENDENCY_FAIL:							//0x0000042C
 		*name = "ERROR_SERVICE_DEPENDENCY_FAIL";
@@ -397,26 +394,89 @@ void GetWinError (unsigned long errcode, char** name) {
 		case ERROR_NOT_FOUND:										//0x00000490
 		*name = "ERROR_NOT_FOUND";
 		break;
+		case ERROR_POINT_NOT_FOUND:									//0x00000493
+		*name = "ERROR_POINT_NOT_FOUND";
+		//The point passed to GetMouseMovePoints is not in the buffer
+		break;
+		case ERROR_POTENTIAL_FILE_FOUND:							//0x0000049C
+		*name = "ERROR_POTENTIAL_FILE_FOUND";
+		//A file was found, but it may not be the correct file
+		break;
 		case ERROR_SHUTDOWN_USERS_LOGGED_ON:						//0x000004A7
 		*name = "ERROR_SHUTDOWN_USERS_LOGGED_ON";
+		//The system shutdown cannot be initiated because there are other users logged on to the computer
+		break;
+		case ERROR_CANNOT_OPEN_PROFILE:								//0x000004B5
+		*name = "ERROR_CANNOT_OPEN_PROFILE";
+		//Unable to open the network connection profile
 		break;
 		case ERROR_BAD_PROFILE:										//0x000004B6
 		*name = "ERROR_BAD_PROFILE";
+		//The network connection profile is corrupted
+		break;
+		case ERROR_EXTENDED_ERROR:									//0x000004B8
+		*name = "ERROR_EXTENDED_ERROR";
+		//An extended error has occured
 		break;
 		case ERROR_INVALID_GROUPNAME:								//0x000004B9
 		*name = "ERROR_INVALID_GROUPNAME";
+		//The format of the specified group name is invalid
 		break;
 		case ERROR_INVALID_COMPUTERNAME:							//0x000004BA
 		*name = "ERROR_INVALID_COMPUTERNAME";
+		//The format of the specified computer name is invalid
 		break;
+		case ERROR_INVALID_EVENTNAME:								//0x000004BB
+		*name = "ERROR_INVALID_EVENTNAME";
+		//The format of the specified event name is invalid
+		break;
+		case ERROR_INVALID_DOMAINNAME:								//0x000004BC
+		*name = "ERROR_INVALID_DOMAINNAME";
+		//The format of the specified domain name in invalid
+		break;
+		case ERROR_INVALID_SERVICENAME:								//0x000004BD
+		*name = "ERROR_INVALID_SERVICENAME";
+		//The format fo the specified service name is invalid
+		break;
+		case ERROR_INVALID_NETNAME:									//0x000004BE
+		*name = "ERROR_INVALID_NETNAME";
+		//The format of the specified network name is invalid
+		break;
+		case ERROR_INVALID_SHARENAME:								//0x000004BF
+		*name = "ERROR_INVALID_SHARENAME";
+		//The format of the specified share name is invalid
+		break;
+		case ERROR_INVALID_PASSWORDNAME:							//0x000004C0
+		*name = "ERROR_INVALID_PASSWORDNAME";
+		//The format of the specified password is invalid
+		break;
+		case ERROR_INVALID_MESSAGENAME:								//0x000004C1
+		*name = "ERROR_INVALID_MESSAGENAME";
+		//The format of the specified message destination is invalid
+		break;
+		case ERROR_INVALID_MESSAGE_DEST:							//0x000004C2
+		*name = "ERROR_INVALID_MESSAGE_DEST";
+		//The format of the specified message destination is invalid
+		break;
+		case ERROR_REMOTE_SESSION_LIMIT_EXCEEDED:					//0x000004C4
+		*name = "ERROR_REMOTE_SESSION_LIMIT_EXCEEDED";
+		//An attempt was made to establish a session to a network server, but there are already too many sessions established to that server
+		break;
+		case ERROR_DUP_DOMAINNAME:									//0x000004C5
+		*name = "ERROR_DUP_DOMAINNAME";
+		//The workgroup or domain name is already in use by another computer on the network
+		break
 		case ERROR_NO_NETWORK:										//0x000004C6
 		*name = "ERROR_NO_NETWORK";
+		//The network is no present or not started
 		break;
 		case ERROR_CANCELLED:										//0x000004C7
 		*name = "ERROR_CANCELLED";
+		//The operation was cancelled by the user
 		break;
-		case ERROR_CANCELLED:										//0x000004C7
-		*name = "ERROR_CANCELLED";
+		case ERROR_USER_MAPPED_FILE:								//0x000004C8
+		*name = "ERROR_USER_MAPPED_FILE";
+		//The requested operation cannot be performed on a file with user-mapped section open
 		break;
 		case ERROR_LOGIN_TIME_RESTRICTION:							//0x000004D7
 		*name = "ERROR_LOGIN_TIME_RESTRICTION";
@@ -466,7 +526,7 @@ void GetWinError (unsigned long errcode, char** name) {
 		case ERROR_NO_SUCH_LOGON_SESSION:							//0x00000520
 		*name = "ERROR_NO_SUCH_LOGON_SESSION";
 		break;
-		case ERROR_NO_SUCH_PRIVLEGE:								//0x00000521
+		case ERROR_NO_SUCH_PRIVILEGE:								//0x00000521
 		*name = "ERROR_NO_SUCH_PRIVLEGE";
 		break;
 		case ERROR_PRIVILEGE_NOT_HELD:								//0x00000522
@@ -517,6 +577,9 @@ void GetWinError (unsigned long errcode, char** name) {
 		case ERROR_ACCOUNT_DISABLED:								//0x00000533
 		*name = "ERROR_ACCOUNT_DISABLED";
 		break;
+		case ERROR_LUIDS_EXHAUSTED:									//0x00000536
+		*name = "ERROR_LUIDS_EXHAUSTED";
+		break;
 		case ERROR_INVALID_ACL:										//0x00000538
 		*name = "ERROR_INVALID_ACL";
 		break;
@@ -526,13 +589,52 @@ void GetWinError (unsigned long errcode, char** name) {
 		case ERROR_INVALID_SECURITY_DESCR:							//0x0000053A
 		*name = "ERROR_INVALID_SECURITY_DESCR";
 		break;
+		case ERROR_BAD_INHERITANCE_HANDLE:							//0x0000053C
+		*name = "ERROR_BAD_INHERITANCE_HANDLE";
+		break;
+		case ERROR_SERVER_DISABLED:									//0x0000053D
+		*name = "ERROR_SERVER_DISABLED";
+		//The server is currently disabled
+		break;
+		case ERROR_INVALID_ID_AUTHORITY:							//0x0000053F
+		*name = "ERROR_INVALID_ID_AUTHORITY";
+		//The value provided was an invalid value for an identifier authority
+		break;
+		case ERROR_ALLOTTED_SPACE_EXCEEDED:							//0x00000540
+		*name = "ALLOTTED_SPACE_EXCEEDED";
+		//No more memory is available for security information updates
+		break;
+		case ERROR_INVALID_GROUP_ATTRIBUTES:						//0x00000541
+		*name = "ERROR_INVALID_GROUP_ATTRIBUTES";
+		//The specified attributes are invalid, or incompatible with the attributes for the group as a whole
+		break;
 		case ERROR_BAD_IMPERSONATION_LEVEL:							//0x00000542
 		*name = "ERROR_BAD_IMPERSONATION_LEVEL";
 		//Either a required impersonation level was not provided, or the provided impersonation level is invalid
 		break;
+		case ERROR_CANT_OPEN_ANONYMOUS:								//0x00000543
+		*name = "ERROR_CANT_OPEN_ANONYMOUS";
+		//Cannot open an anonymous level security token
+		break;
+		case ERROR_BAD_VALIDATION_CLASS:							//0x00000544
+		*name = "ERROR_BAD_VALIDATION_CLASS";
+		//The validation information class requested was invalid
+		break;
 		case ERROR_BAD_TOKEN_TYPE:									//0x00000545
 		*name = "ERROR_BAD_TOKEN_TYPE";
 		//The type of the token is inappropriate for its attempted use
+		break;
+		case ERROR_NO_SECURITY_ON_OBJECT:							//0x00000546
+		*name = "ERROR_NO_SECURITY_ON_OBJECT";
+		//Unable to perform a security operation on an object that has no associated security
+		break;
+		case ERROR_CANT_ACCESS_DOMAIN_INFO:							//0x00000547
+		*name = "ERROR_CANT_ACCESS_DOMAIN_INFO";
+		//Configuration information could not be read from the domain controller, either because the machine is unvailable, or access has been denied
+		break;
+		case ERROR_INVALID_SERVER_STATE:							//0x00000548
+		*name = "ERROR_INVALID_SERVER_STATE";
+		//The security account manager (SAM) or local security authority (LSA) server was in the wrong state to perform the security operation
 		break;
 		case ERROR_NO_SUCH_DOMAIN:									//0x0000054B
 		*name = "ERROR_NO_SUCH_DOMAIN";
@@ -541,6 +643,10 @@ void GetWinError (unsigned long errcode, char** name) {
 		case ERROR_DOMAIN_EXISTS:									//0x0000054C
 		*name = "ERROR_DOMAIN_EXISTS";
 		//The specified domain already exists
+		break;
+		case ERROR_DOMAIN_LIMIT_EXCEEDED:							//0x0000054D
+		*name = "ERROR_DOMAIN_LIMIT_EXCEEDED";
+		//An attempt was made to exceed the limit on the number of the domains per server
 		break;
 		case ERROR_INTERNAL_DB_CORRUPTION:							//0x0000054E
 		*name = "ERROR_INTERNAL_DB_CORRUPTION";
