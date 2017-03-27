@@ -2,18 +2,53 @@
 #include <windows.h>
 #include <stdio.h>
 #include <sddl.h>
+
+#define SECURITY_WIN32
+#include <security.h>
 #include "winerrors.h"
 
 #pragma comment(lib, "advapi32.lib")
+#pragma comment(lib, "secur32.lib")
 
 struct UserInfo {
-	char* username;
-	char* userdomain;
-	char* logonserver;
-	unsigned int userdomain_size;
-	unsigned int username_size;
+	unsigned int 	username_size;
+	char* 			username;
+
+	unsigned int 	userdomain_size;
+	char* 			userdomain;
+
+	unsigned int	principal_sid_size;
+	SID*			principal_sid;
 };
 
+char* GetSidTypeStr(SID_NAME_USE sidtype) {
+	switch(sidtype) {
+		case SidTypeUser:
+			return "SidTypeUser";
+		case SidTypeGroup:
+			return "SidTypeGroup";
+		case SidTypeDomain:
+			return "SidTypeDomain";
+		case SidTypeAlias:
+			return "SidTypeAlias";
+		case SidTypeWellKnownGroup:
+			return "SidTypeWellKnownGroup";
+		case SidTypeDeletedAccount:
+			return "SidTypeDeletedAccount";
+		case SidTypeInvalid:
+			return "SidTypeInvalid";
+		case SidTypeUnknown:
+			return "SidTypeUnknown";
+		case SidTypeComputer:
+			return "SidTypeComputer";
+		case SidTypeLabel:
+			return "SidTypeLabel";
+		default:
+			return 0;
+	}
+}
+
+/*
 int GetCurrentUserAccountInfo(struct UserInfo* uinfo){
 	char* rkey[3] = {"Volatile Environment", "USERNAME", "USERDOMAIN"};
 
@@ -23,39 +58,83 @@ int GetCurrentUserAccountInfo(struct UserInfo* uinfo){
 
 	return 0;
 }
+*/
 
-int main (int argc, char** argv) {
-	struct UserInfo uinfo;
-	uinfo.userdomain = NULL;	
-	SID sid;
-	DWORD sid_size = 28;
-	BOOL ret;
-	char* error = 0;
-	SID_NAME_USE sidtype = SidTypeUser;
+int LogOnToAdminAccount(struct UserInfo* uinfo) {
+	unsigned int result = 0;
+	HANDLE token;
+	LogonUser("dddkgarrett", uinfo->userdomain, "CNKStone18", LOGON32_LOGON_INTERACTIVE, LOGON32_PROVIDER_WINNT50, &token);
+	result = GetLastError();
+	if(result != 0) {
+		DefErrorHandler(result, "LogonUser", 66);
+		return 1;
+	}
+}
 
-	uinfo.username_size = 80;
-	uinfo.username = malloc(uinfo.username_size);
-	SecureZeroMemory(uinfo.username, uinfo.username_size);
+int GetCurrentUserAccountInfo(struct UserInfo* uinfo) {
+	unsigned char ret = 0;
+	unsigned int result = 0;
+	SID_NAME_USE sidtype = 0;
 
-	uinfo.userdomain_size = 14;
-	uinfo.userdomain = malloc(uinfo.userdomain_size);
-	SecureZeroMemory(uinfo.userdomain, uinfo.userdomain_size);
+	//Get the username of the current user
+	while( !GetUserNameExA(NameSamCompatible, uinfo->username, &uinfo->username_size) ) {
+		result = GetLastError();
+		if(result != ERROR_INSUFFICIENT_BUFFER && result != ERROR_MORE_DATA){
+			DefErrorHandler(result, "GetUserName", 42);
+			return 1;
+		} 
+		uinfo->username = (char*) malloc(uinfo->username_size);
+	}
 
-	char* sidstr;
-	char userdomain[14];
+	//Lookup account info by username
+	//uinfo->principal_sid 		= (SID*)malloc(uinfo->principal_sid_size);
+	uinfo->userdomain_size 		= 0;
 
-	GetCurrentUserAccountInfo(&uinfo);
-
-	//Lookup account info by username	
-	ret = LookupAccountName(0, uinfo.username, &sid, &sid_size, userdomain, &uinfo.userdomain_size, &sidtype);
-
-	if(!ret) {
-		DefErrorHandler(GetLastError(), "LookupAccountName");
-		printf("Required SID size = %d\n", sid_size);
-		printf("Required Domain size = %d\n", uinfo.userdomain_size);
+	if(!uinfo->principal_sid) {
+		printf("Could not allocate memory for SID");
 		return 1;
 	}
 
+	while( !LookupAccountName(0, uinfo->username, 
+		uinfo->principal_sid, 
+		&uinfo->principal_sid_size, 
+		uinfo->userdomain, 
+		&uinfo->userdomain_size, &sidtype) ){
+
+		result = GetLastError();
+		if(result != ERROR_INSUFFICIENT_BUFFER && result != ERROR_MORE_DATA) {
+			DefErrorHandler(result, "LookupAccountName", 55);
+			return 1;
+		}
+
+		uinfo->principal_sid 	= (SID*)malloc(uinfo->principal_sid_size);
+		uinfo->userdomain 		= (char*)malloc(uinfo->userdomain_size);
+	}
+
+	
+
+/*
+	char* sidstr = malloc(uinfo->principal_sid_size);
+	ConvertSidToStringSidA(uinfo->principal_sid, &sidstr);
+	printf("user sid is : %s\n", sidstr);
+	printf("user account type is : %s\n", GetSidTypeStr(sidtype));
+*/
+
+	return 0;
+}
+
+int main (int argc, char** argv) {
+	struct UserInfo uinfo;
+	SID_NAME_USE sidtype = SidTypeUser;
+
+	uinfo.username_size = 0;
+	char* sidstr;
+
+	GetCurrentUserAccountInfo(&uinfo);
+	LogOnToAdminAccount(&uinfo);
+
+
+/*
 	ret = ConvertSidToStringSidA(&sid, &sidstr);
 	if(!ret) {
 		DefErrorHandler(GetLastError(), "ConvertSidToStringSidA");
@@ -97,5 +176,6 @@ int main (int argc, char** argv) {
 	//printf(sidstr);
 
 	//printf("%s\\%s\n", uinfo.userdomain, uinfo.username);
+*/
 	return 0;
 }
