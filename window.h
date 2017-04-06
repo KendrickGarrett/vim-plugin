@@ -1,0 +1,1 @@
+#include "core.h"#define  CLASS_NAME MyWindow#define INTERFACE_IWINDOW \ void Show(void* object, bool8 min_or_max); \ void Hide(void* object);struct CLASS_NAME { INTERFACE_ICLASS INTERFACE_IOBJECT INTERFACE_IWINDOW};extern struct IClass* CLASS_NAME;#undef CLASS_NAME
